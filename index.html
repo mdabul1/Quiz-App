@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Assignment</title>
+
+<style>
+body {
+    background: linear-gradient(to bottom, #024b04, #3cce46, #168862);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Times New Roman', serif;
+}
+
+.timer-container {
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    background: rgb(19, 210, 175);
+    padding: 10px 15px;
+    border-radius: 8px;
+    color: red;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.quiz-box {
+    background-color: #0b9f64;
+    width: 80%;
+    max-width: 850px;
+    min-height: 500px;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+.title {
+    color: #8b0000;
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+}
+
+.question-section {
+    text-align: left;
+    color: white;
+    padding-left: 50px;
+}
+
+.q-count {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#q-text {
+    font-size: 2rem;
+    margin-bottom: 25px;
+}
+
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    font-size: 1.5rem;
+}
+
+input[type="radio"] {
+    margin-right: 15px;
+    transform: scale(1.3);
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.ctrl-btn {
+    background-color: #002200;
+    color: #00ff41;
+    border: none;
+    padding: 15px 35px;
+    font-size: 1.4rem;
+    font-weight: bold;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.ctrl-btn:hover {
+    transform: scale(1.05);
+    background-color: #003300;
+}
+</style>
+</head>
+
+<body>
+
+<div class="timer-container">
+    <span id="timer-text">00:00:30</span> s left
+</div>
+
+<div class="quiz-box">
+    <h1 class="title"><u>Quiz Box</u></h1>
+
+    <div class="question-section">
+        <p class="q-count">Question : <span id="current-q-num">1</span></p>
+        <h2 id="q-text"></h2>
+
+        <form id="quiz-form" class="options-list"></form>
+    </div>
+
+    <div class="nav-buttons">
+        <button type="button" id="prev-btn" class="ctrl-btn">Previous</button>
+        <button type="button" id="submit-btn" class="ctrl-btn">Submit</button>
+        <button type="button" id="next-btn" class="ctrl-btn">Next</button>
+    </div>
+</div>
+
+<script>
+const questions = [
+    {
+        q: "HTML stands for",
+        options: [
+            "Hyper Text Markup Language",
+            "High Text Markup Language",
+            "Hyper Tool Markup Language",
+            "Hyper Transfer Markup Language"
+        ],
+        correct: 0
+    },
+    {
+        q: "CSS stands for",
+        options: [
+            "Computer Style Sheet",
+            "Cascading Style Sheets",
+            "Creative Style Sheet",
+            "Color Style Sheet"
+        ],
+        correct: 1
+    },
+    {
+        q: "JavaScript is a",
+        options: [
+            "Compiled language",
+            "Markup language",
+            "Scripting language",
+            "Styling language"
+        ],
+        correct: 2
+    }
+];
+
+let currentIndex = 0;
+let timeLeft = 30;
+let timer;
+let answers = new Array(questions.length).fill(null);
+
+function startTimer() {
+    clearInterval(timer);
+    timeLeft = 30;
+    updateTimer();
+
+    timer = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            nextQuestion();
+        }
+    }, 1000);
+}
+
+function updateTimer() {
+    let sec = timeLeft < 10 ? "0" + timeLeft : timeLeft;
+    document.getElementById("timer-text").innerText = "00:00:" + sec;
+}
+
+function loadQuestion() {
+    startTimer();
+    const q = questions[currentIndex];
+    document.getElementById("current-q-num").innerText = currentIndex + 1;
+    document.getElementById("q-text").innerText = q.q;
+
+    const form = document.getElementById("quiz-form");
+    form.innerHTML = "";
+
+    q.options.forEach((opt, i) => {
+        const label = document.createElement("label");
+        label.innerHTML = `
+            <input type="radio" name="answer" value="${i}"
+            ${answers[currentIndex] == i ? "checked" : ""}>
+            ${opt}
+        `;
+        form.appendChild(label);
+    });
+}
+
+function saveAnswer() {
+    const selected = document.querySelector('input[name="answer"]:checked');
+    if (selected) answers[currentIndex] = selected.value;
+}
+
+function nextQuestion() {
+    saveAnswer();
+    if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        loadQuestion();
+    } else {
+        alert("Last question reached. Click Submit to see result.");
+    }
+}
+
+document.getElementById("next-btn").onclick = nextQuestion;
+
+document.getElementById("prev-btn").onclick = () => {
+    saveAnswer();
+    if (currentIndex > 0) {
+        currentIndex--;
+        loadQuestion();
+    }
+};
+
+document.getElementById("submit-btn").onclick = () => {
+    saveAnswer();
+    let score = 0;
+    answers.forEach((ans, i) => {
+        if (ans == questions[i].correct) score++;
+    });
+    alert("Your Score: " + score + " / " + questions.length);
+};
+
+loadQuestion();
+</script>
+
+</body>
+</html>
