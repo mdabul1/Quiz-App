@@ -3,123 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Assignment</title>
+<title>Gen-Z Quiz App</title>
 
 <style>
+* { box-sizing: border-box; }
+
 body {
-    background: linear-gradient(to bottom, #024b04, #3cce46, #168862);
-    height: 100vh;
     margin: 0;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Times New Roman', serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    font-family: 'Segoe UI', sans-serif;
+    color: #fff;
 }
 
-.timer-container {
-    position: absolute;
-    top: 30px;
-    right: 50px;
-    background: rgb(19, 210, 175);
-    padding: 10px 15px;
-    border-radius: 8px;
-    color: red;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-.quiz-box {
-    background-color: #0b9f64;
-    width: 80%;
+.card {
+    width: 90%;
     max-width: 850px;
-    min-height: 500px;
-    border-radius: 15px;
     padding: 40px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-    text-align: center;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
 }
 
 .title {
-    color: #8b0000;
-    font-size: 2.5rem;
-    margin-bottom: 50px;
+    text-align: center;
+    font-size: 2.7rem;
+    margin-bottom: 10px;
+    background: linear-gradient(to right, #00ffcc, #00c3ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.question-section {
-    text-align: left;
-    color: white;
-    padding-left: 50px;
+.subtitle {
+    text-align: center;
+    opacity: 0.8;
+    margin-bottom: 30px;
 }
 
-.q-count {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-#q-text {
-    font-size: 2rem;
-    margin-bottom: 25px;
-}
-
-.options-list {
+.start-form {
     display: flex;
     flex-direction: column;
+    gap: 20px;
+}
+
+.start-form input {
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1.1rem;
+    outline: none;
+}
+
+.btn {
+    padding: 15px 40px;
+    border-radius: 40px;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(135deg, #00ffcc, #00c3ff);
+    color: #003333;
+    box-shadow: 0 10px 25px rgba(0,255,204,0.4);
+    transition: 0.3s;
+}
+
+.btn:hover { transform: scale(1.07); }
+
+.btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.timer {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background: rgba(255,255,255,0.15);
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: bold;
+    color: #ff6b6b;
+}
+
+.student-info {
+    margin-bottom: 15px;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.question {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+
+.options label {
+    display: flex;
     gap: 12px;
-    font-size: 1.5rem;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.1);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.options label:hover {
+    background: rgba(0,255,200,0.2);
+    transform: translateX(5px);
 }
 
 input[type="radio"] {
-    margin-right: 15px;
     transform: scale(1.3);
+    accent-color: #00ffcc;
 }
 
 .nav-buttons {
     display: flex;
     justify-content: center;
-    gap: 30px;
-    margin-top: 60px;
-}
-
-.ctrl-btn {
-    background-color: #002200;
-    color: #00ff41;
-    border: none;
-    padding: 15px 35px;
-    font-size: 1.4rem;
-    font-weight: bold;
-    border-radius: 40px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.ctrl-btn:hover {
-    transform: scale(1.05);
-    background-color: #003300;
+    gap: 25px;
+    margin-top: 30px;
+    flex-wrap: wrap;
 }
 </style>
 </head>
 
 <body>
 
-<div class="timer-container">
-    <span id="timer-text">00:00:30</span> s left
+<div class="timer" id="timerBox" style="display:none;">
+    ⏳ <span id="timer">30</span>s left
 </div>
 
-<div class="quiz-box">
-    <h1 class="title"><u>Quiz Box</u></h1>
+<!-- START SCREEN -->
+<div class="card" id="startScreen">
+    <h1 class="title">Let’s Get You In 🚀</h1>
+    <p class="subtitle">Fill this real quick & then let’s test that brain 🧠</p>
 
-    <div class="question-section">
-        <p class="q-count">Question : <span id="current-q-num">1</span></p>
-        <h2 id="q-text"></h2>
+    <form class="start-form" id="startForm">
+        <input type="text" id="name" placeholder="Your name 👀" required>
+        <input type="text" id="branch" placeholder="Your branch 💪" required>
+        <input type="text" id="regno" placeholder="Reg. Number 🧾" required>
+        <button class="btn" type="submit">Start Quiz 🔥</button>
+    </form>
+</div>
 
-        <form id="quiz-form" class="options-list"></form>
-    </div>
+<!-- QUIZ SCREEN -->
+<div class="card" id="quizScreen" style="display:none;">
+    <div class="student-info" id="studentInfo"></div>
+
+    <p>Question <span id="qNum">1</span></p>
+    <div class="question" id="question"></div>
+
+    <form class="options" id="options"></form>
 
     <div class="nav-buttons">
-        <button type="button" id="prev-btn" class="ctrl-btn">Previous</button>
-        <button type="button" id="submit-btn" class="ctrl-btn">Submit</button>
-        <button type="button" id="next-btn" class="ctrl-btn">Next</button>
+        <button class="btn" type="button" onclick="prevQ()">Previous</button>
+        <button class="btn" id="submitBtn" type="button" onclick="submitQuiz()" disabled>
+            Submit 🚀
+        </button>
+        <button class="btn" type="button" onclick="nextQ()">Next</button>
     </div>
 </div>
 
@@ -157,87 +203,106 @@ const questions = [
     }
 ];
 
-let currentIndex = 0;
-let timeLeft = 30;
-let timer;
+let index = 0;
 let answers = new Array(questions.length).fill(null);
+let visited = new Array(questions.length).fill(false);
+let time = 30;
+let timer;
+
+document.getElementById("startForm").onsubmit = e => {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const branch = document.getElementById("branch").value;
+    const reg = document.getElementById("regno").value;
+
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("quizScreen").style.display = "block";
+    document.getElementById("timerBox").style.display = "block";
+
+    document.getElementById("studentInfo").innerText =
+        `Name: ${name} | Branch: ${branch} | Reg No: ${reg}`;
+
+    loadQ();
+};
 
 function startTimer() {
     clearInterval(timer);
-    timeLeft = 30;
-    updateTimer();
+    time = 30;
+    document.getElementById("timer").innerText = time;
 
     timer = setInterval(() => {
-        timeLeft--;
-        updateTimer();
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            nextQuestion();
-        }
+        time--;
+        document.getElementById("timer").innerText = time;
+        if (time === 0) nextQ();
     }, 1000);
 }
 
-function updateTimer() {
-    let sec = timeLeft < 10 ? "0" + timeLeft : timeLeft;
-    document.getElementById("timer-text").innerText = "00:00:" + sec;
-}
-
-function loadQuestion() {
+function loadQ() {
     startTimer();
-    const q = questions[currentIndex];
-    document.getElementById("current-q-num").innerText = currentIndex + 1;
-    document.getElementById("q-text").innerText = q.q;
+    visited[index] = true; // 👈 mark as visited
 
-    const form = document.getElementById("quiz-form");
-    form.innerHTML = "";
+    document.getElementById("qNum").innerText = index + 1;
+    document.getElementById("question").innerText = questions[index].q;
 
-    q.options.forEach((opt, i) => {
-        const label = document.createElement("label");
-        label.innerHTML = `
-            <input type="radio" name="answer" value="${i}"
-            ${answers[currentIndex] == i ? "checked" : ""}>
-            ${opt}
+    const opt = document.getElementById("options");
+    opt.innerHTML = "";
+
+    questions[index].options.forEach((text, i) => {
+        opt.innerHTML += `
+            <label>
+                <input type="radio" name="ans" value="${i}" ${answers[index] == i ? "checked" : ""}>
+                ${text}
+            </label>
         `;
-        form.appendChild(label);
     });
+
+    checkSubmitAccess();
 }
 
-function saveAnswer() {
-    const selected = document.querySelector('input[name="answer"]:checked');
-    if (selected) answers[currentIndex] = selected.value;
+function save() {
+    const selected = document.querySelector('input[name="ans"]:checked');
+    if (selected) answers[index] = selected.value;
 }
 
-function nextQuestion() {
-    saveAnswer();
-    if (currentIndex < questions.length - 1) {
-        currentIndex++;
-        loadQuestion();
-    } else {
-        alert("Last question reached. Click Submit to see result.");
+function nextQ() {
+    save();
+    if (index < questions.length - 1) {
+        index++;
+        loadQ();
     }
 }
 
-document.getElementById("next-btn").onclick = nextQuestion;
-
-document.getElementById("prev-btn").onclick = () => {
-    saveAnswer();
-    if (currentIndex > 0) {
-        currentIndex--;
-        loadQuestion();
+function prevQ() {
+    save();
+    if (index > 0) {
+        index--;
+        loadQ();
     }
-};
+}
 
-document.getElementById("submit-btn").onclick = () => {
-    saveAnswer();
+function checkSubmitAccess() {
+    const allVisited = visited.every(v => v === true);
+    document.getElementById("submitBtn").disabled = !allVisited;
+}
+
+function submitQuiz() {
+    save();
+
+    if (!visited.every(v => v)) {
+        alert("👀 Hold up!\nReview all questions once before submitting 😎");
+        return;
+    }
+
     let score = 0;
-    answers.forEach((ans, i) => {
-        if (ans == questions[i].correct) score++;
+    answers.forEach((a, i) => {
+        if (a == questions[i].correct) score++;
     });
-    alert("Your Score: " + score + " / " + questions.length);
-};
 
-loadQuestion();
+    alert(`🎉 Quiz Completed!\nYour Score: ${score}/${questions.length}`);
+}
 </script>
 
 </body>
 </html>
+
